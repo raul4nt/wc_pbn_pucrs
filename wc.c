@@ -1,8 +1,7 @@
 #include <stdio.h>
-#include <string.h> // pra usar strcmp
-#include <ctype.h> // pra usar isspace
+#include <string.h>
+#include <ctype.h>
 
-// estrutura pra guardar as opcoes escolhidas
 typedef struct {
     int linhas;
     int palavras;
@@ -15,10 +14,9 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    Opcoes opcoes = {0, 0, 0}; // zera as flags
+    Opcoes opcoes = {0, 0, 0};
     char *nome_arquivo = NULL;
 
-    // le os argumentos pra ver quais flags foram passadas
     for(int i = 1; i < argc; i++) {
         if(strcmp(argv[i], "-l") == 0) {
             opcoes.linhas = 1;
@@ -27,9 +25,14 @@ int main(int argc, char *argv[]) {
         } else if(strcmp(argv[i], "-c") == 0) {
             opcoes.caracteres = 1;
         } else {
-            // se nao eh flag, assumimos que eh o nome do arquivo
             nome_arquivo = argv[i];
         }
+    }
+
+    if (opcoes.linhas == 0 && opcoes.palavras == 0 && opcoes.caracteres == 0) {
+        opcoes.linhas = 1;
+        opcoes.palavras = 1;
+        opcoes.caracteres = 1;
     }
 
     if (nome_arquivo == NULL) {
