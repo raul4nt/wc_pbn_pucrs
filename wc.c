@@ -1,14 +1,15 @@
 #include <stdio.h>
+#include <ctype.h> // pra usar isspace
 
 int main(int argc, char *argv[]) { 
     // verifica se passou o arquivo
     if (argc < 2) {
-        printf("Uso: %s <arquivo>\n", argv[0]);
+        printf("Uso: %s [opcoes] <arquivo>\n", argv[0]);
         return 1;
     }
 
-    // pega nome do arquivo
-    char *nome_arquivo = argv[1];
+    // pega nome do arquivo (por enquanto assumimos que eh o ultimo argumento)
+    char *nome_arquivo = argv[argc - 1];
 
     // abre arquivo pra leitura
     FILE *arquivo = fopen(nome_arquivo, "r");
@@ -19,6 +20,8 @@ int main(int argc, char *argv[]) {
 
     int caracteres = 0;
     int linhas = 0;
+    int palavras = 0;
+    int dentro_palavra = 0; // flag pra saber se ta lendo uma palavra
     int c;
 
     // le char por char ate o fim
@@ -29,13 +32,21 @@ int main(int argc, char *argv[]) {
         if (c == '\n') {
             linhas++;
         }
+
+        // logica pra contar palavras
+        if (isspace(c)) {
+            dentro_palavra = 0; // achou espaco, saiu da palavra
+        } else if (dentro_palavra == 0) {
+            dentro_palavra = 1; // achou letra nova, entrou na palavra
+            palavras++;
+        }
     }
 
     // fecha arquivo
     fclose(arquivo);
 
-    // imprime linhas chars e nome
-    printf("%d %d %s\n", linhas, caracteres, nome_arquivo);
+    // imprime linhas, palavras, chars e nome
+    printf("%d %d %d %s\n", linhas, palavras, caracteres, nome_arquivo);
 
     return 0;
 }
