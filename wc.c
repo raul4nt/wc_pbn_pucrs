@@ -9,11 +9,6 @@ typedef struct {
 } Opcoes;
 
 int main(int argc, char *argv[]) { 
-    if (argc < 2) {
-        printf("Uso: %s [opcoes] <arquivo>\n", argv[0]);
-        return 1;
-    }
-
     Opcoes opcoes = {0, 0, 0};
     char *nome_arquivo = NULL;
 
@@ -35,15 +30,15 @@ int main(int argc, char *argv[]) {
         opcoes.caracteres = 1;
     }
 
+    FILE *arquivo;
     if (nome_arquivo == NULL) {
-        printf("Erro: arquivo nao informado\n");
-        return 1;
-    }
-
-    FILE *arquivo = fopen(nome_arquivo, "r");
-    if (arquivo == NULL) {
-        printf("Erro ao abrir o arquivo %s\n", nome_arquivo);
-        return 1;
+        arquivo = stdin;
+    } else {
+        arquivo = fopen(nome_arquivo, "r");
+        if (arquivo == NULL) {
+            printf("Erro ao abrir o arquivo %s\n", nome_arquivo);
+            return 1;
+        }
     }
 
     int caracteres = 0;
@@ -64,9 +59,19 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    fclose(arquivo);
+    if (arquivo != stdin) {
+        fclose(arquivo);
+    }
 
-    printf("%d %d %d %s\n", linhas, palavras, caracteres, nome_arquivo);
+    if (opcoes.linhas) printf("%d ", linhas);
+    if (opcoes.palavras) printf("%d ", palavras);
+    if (opcoes.caracteres) printf("%d ", caracteres);
+    
+    if (nome_arquivo != NULL) {
+        printf("%s\n", nome_arquivo);
+    } else {
+        printf("\n");
+    }
 
     return 0;
 }
